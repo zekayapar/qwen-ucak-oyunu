@@ -1,0 +1,25 @@
+{
+  "round": "03-review-fixes",
+  "started_at_utc": "2026-10-12T22:24:47.795287+00:00",
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 7007,
+    "total_tokens": 13871,
+    "completion_tokens": 6864,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "ttft_ms": 2489.880889000233,
+  "total_s": 39.858208473000104,
+  "generation_window_s": 37.368226351999965,
+  "e2e_tokens_per_s": 172.21044956522982,
+  "decode_tokens_per_s": 183.65870339555704,
+  "response_sha256": "1df99c8aaab9187c6e882ab98d38ad77a250621767e7a7ba0ae58e5c471d6a20",
+  "temperature": 0.2,
+  "seed": 42,
+  "thinking": false,
+  "max_tokens": 8192,
+  "endpoint_scope": "localhost vLLM, production TP2/MTP3; no gateway/HTTPS",
+  "content_chunks": 1734
+}

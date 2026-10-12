@@ -13,7 +13,7 @@ Gereksinimler:
 - Başlangıç/son/duraklama arayüzü gerçek HTML düğmeleri olsun, klavyeyle erişilebilir olsun. reduced-motion tercihini efektlerde dikkate al. Oyun dışında internet/API bağlantısı yok.
 Eksiksiz dosyayı tek html kod bloğunda üret. Kodun içinde oyun durumunu veya zamanını değiştiren gizli test arayüzü ekleme. Basit ama gerçekten oynanabilir bir oyun istiyorum.'''
 
-def run(round_name,system,prompt,max_tokens=4096):
+def run(round_name,system,prompt,max_tokens=4096,write_html=True):
  payload={'model':'Qwen/Qwen3.8-27B','messages':[{'role':'system','content':system},{'role':'user','content':prompt}],'max_tokens':max_tokens,'temperature':0.2,'seed':42,'stream':True,'stream_options':{'include_usage':True},'chat_template_kwargs':{'enable_thinking':False}}
  p=ROOT/'benchmark'/round_name;p.mkdir(exist_ok=True)
  (p/'request.json').write_text(json.dumps(payload,ensure_ascii=False,indent=2))
@@ -38,6 +38,7 @@ def run(round_name,system,prompt,max_tokens=4096):
  report={'round':round_name,'started_at_utc':started,'finish_reason':finish,'usage':usage,'ttft_ms':(first-start)*1000,'total_s':elapsed,'generation_window_s':last-first,'e2e_tokens_per_s':usage['completion_tokens']/elapsed,'decode_tokens_per_s':(usage['completion_tokens']-1)/(last-first) if last>first else None,'response_sha256':hashlib.sha256(answer.encode()).hexdigest(),'temperature':.2,'seed':42,'thinking':False,'max_tokens':max_tokens,'endpoint_scope':'localhost vLLM, production TP2/MTP3; no gateway/HTTPS','content_chunks':len(chunks)}
  (p/'metrics.json').write_text(json.dumps(report,indent=2));print(json.dumps(report),flush=True)
  assert finish!='length','Truncated output; do not deploy'
+ if not write_html:return report
  content=answer.split('```html',1)[1].split('```',1)[0].strip() if '```html' in answer else answer.strip().removeprefix('```').removesuffix('```')
  assert '<html' in content.lower() and '</html>' in content.lower(),'Not complete HTML'
  (ROOT/'index.html').write_text(content+'\n');return report

@@ -1,0 +1,23 @@
+{
+  "model": "Qwen/Qwen3.8-27B",
+  "messages": [
+    {
+      "role": "system",
+      "content": "Sen JavaScript geliştiricisisin. Yalnız istenen JSON değişikliklerini döndür; markdown veya açıklama ekleme."
+    },
+    {
+      "role": "user",
+      "content": "Oyuna son iki küçük düzeltme gerekiyor. 12 mantık testinde11geçti; native HTML button üzerindeEnter globalhandler yüzünden erkenden resume yapıyor. Ayrıca can göstergesi mobilde sağüst pause düğmesinin altında kalabiliyor.\nYalnız JSON {\"replacements\":[{\"old\":\"...\",\"new\":\"...\"},...]} döndür. Aşağıdaki iki old parçası bire bir aynı kalsın.\n1. keydown içinde k belirlendikten sonra k===enter ve e.target.tagName===BUTTON ise return ile globalhandler çalışmasın; nativebutton click kendi çalışsın. e.repeat kontrolleri mevcut devam ediyor.\n2. CAN metni sağa hizalı olmasın. Sola hizala ve14,62koordinatına çiz ki REKOR38satırının altında olsun. Yalnız bu iki değişiklik.\nParçalar:\n[\"  window.addEventListener('keydown', e=>{\\n    const k=e.key.toLowerCase();\", \"    ctx.textAlign='right';\\n    ctx.font='700 15px system-ui,sans-serif';\\n    ctx.fillStyle='#ffd23f';\\n    let hearts='';\\n    for(let i=0;i<3;i++) hearts += i<player.lives ? '♥ ' : '♡ ';\\n    ctx.fillText('CAN '+hearts, W-14, 40);\"]"
+    }
+  ],
+  "max_tokens": 1024,
+  "temperature": 0.2,
+  "seed": 42,
+  "stream": true,
+  "stream_options": {
+    "include_usage": true
+  },
+  "chat_template_kwargs": {
+    "enable_thinking": false
+  }
+}

@@ -19,8 +19,10 @@
     overflow:hidden; -webkit-tap-highlight-color:transparent;
   }
   #stage{
-    position:relative; width:min(100vw, calc(100vh * 480 / 720));
-    aspect-ratio:480 / 720; background:#000;
+    position:relative;
+    width:min(100vw, calc(100dvh * 480 / 720));
+    aspect-ratio:480 / 720;
+    background:#000;
     box-shadow:0 0 0 1px var(--line), 0 0 40px rgba(34,224,255,.18);
     border-radius:10px; overflow:hidden;
   }
@@ -28,6 +30,7 @@
     position:absolute; inset:0; width:100%; height:100%;
     display:block; touch-action:none; cursor:crosshair;
   }
+  canvas:focus-visible{outline:3px solid var(--gold); outline-offset:-3px}
   .overlay{
     position:absolute; inset:0; display:flex; flex-direction:column;
     align-items:center; justify-content:center; gap:14px; text-align:center;
@@ -83,7 +86,10 @@
 </head>
 <body>
 <div id="stage">
-  <canvas id="game"></canvas>
+  <canvas id="game" tabindex="0" role="img"
+    aria-label="Zeka Uçuş oyun alanı. WASD veya ok tuşlarıyla hareket et, Boşluk ile ateş et, P ile duraklat.">
+    Zeka Uçuş oyun alanı.
+  </canvas>
   <button id="pauseBtn" aria-label="Duraklat">❚❚</button>
 
   <div id="startScreen" class="overlay">
@@ -144,7 +150,7 @@
   best=loadBest();
 
   function reset(){
-    player={x:W/2, y:H-90, w:34, h:40, speed:340};
+    player={x:W/2, y:H-90, w:34, h:40, speed:340, lives:3};
     bullets=[]; enemyBullets=[]; enemies=[]; particles=[];
     score=0; elapsed=0; spawnTimer=0; fireTimer=0; shake=0; invuln=0;
     stars=[];
@@ -224,8 +230,9 @@
       if(b.y<-20) bullets.splice(i,1);
     }
     for(let i=enemyBullets.length-1;i>=0;i--){
-      const b=enemyBullets[i]; b.y+=b.vy*dt;
-      if(b.y>H+20) enemyBullets.splice(i,1);
+      const b=enemyBullets[i];
+      b.x+=b.vx*dt; b.y+=b.vy*dt;
+      if(b.x<-40||b.x>W+40||b.y<-40||b.y>H+40) enemyBullets.splice(i,1);
     }
 
     // Düşmanlar
@@ -245,9 +252,6 @@
       }
       if(e.y>H+e.h) enemies.splice(i,1);
     }
-
-    // Düşman mermisi vx
-    for(const b of enemyBullets) b.x+=b.vx*dt;
 
     // Oyuncu mermisi vs düşman
     for(let i=enemies.length-1;i>=0;i--){
@@ -298,11 +302,13 @@
     }
 
     // Yıldızlar
-    for(const s of stars){
-      s.y+=(40+s.z*120)*dt;
-      if(s.y>H){ s.y=0; s.x=Math.random()*W; }
+    if(!reduceMotion){
+      for(const s of stars){
+        s.y+=(40+s.z*120)*dt;
+        if(s.y>H){ s.y=0; s.x=Math.random()*W; }
+      }
+      gridOffset=(gridOffset+dt*40)%40;
     }
-    gridOffset=(gridOffset+dt*40)%40;
 
     if(shake>0) shake-=dt*30;
   }
@@ -322,6 +328,7 @@
     finalBest.textContent=best;
     show(endScreen);
     pauseBtn.style.display='none';
+    clearInputs();
   }
 
   // ---- Çizim ----
@@ -450,13 +457,13 @@
     ctx.font='600 13px system-ui,sans-serif';
     ctx.fillStyle='#7f93b8'; ctx.shadowBlur=0;
     ctx.fillText('REKOR '+best, 14, 38);
-    // Canlar
-    ctx.textAlign='right';
+    // Canlar (ikinci satır, pause düğmesiyle çakışmasın)
+    ctx.textAlign='left';
     ctx.font='700 15px system-ui,sans-serif';
     ctx.fillStyle='#ffd23f';
     let hearts='';
     for(let i=0;i<3;i++) hearts += i<player.lives ? '♥ ' : '♡ ';
-    ctx.fillText('CAN '+hearts, W-14, 14);
+    ctx.fillText('CAN '+hearts, 14, 62);
     ctx.restore();
   }
 
@@ -474,13 +481,23 @@
   function show(el){ el.classList.remove('hidden'); }
   function hide(el){ el.classList.add('hidden'); }
 
+  function clearInputs(){
+    for(const k in keys) keys[k]=false;
+    pointer.active=false;
+    if(pointer.id!=null){
+      try{ canvas.releasePointerCapture(pointer.id); }catch(err){}
+    }
+    pointer.id=null;
+    pointer.lastX=0; pointer.lastY=0;
+  }
+
   function startGame(){
     reset();
-    player.lives=3;
     state='playing';
     hide(startScreen); hide(endScreen); hide(pauseScreen);
     pauseBtn.style.display='flex';
     pauseBtn.textContent='❚❚';
+    clearInputs();
     canvas.focus();
   }
   function pauseGame(){
@@ -488,6 +505,7 @@
     state='paused';
     show(pauseScreen);
     pauseBtn.textContent='▶';
+    clearInputs();
   }
   function resumeGame(){
     if(state!=='paused') return;
@@ -495,6 +513,7 @@
     hide(pauseScreen);
     pauseBtn.textContent='❚❚';
     last=performance.now();
+    clearInputs();
     canvas.focus();
   }
 
@@ -502,17 +521,25 @@
   const keys={};
   window.addEventListener('keydown', e=>{
     const k=e.key.toLowerCase();
+    if(k==='enter' && e.target.tagName==='BUTTON') return;
     if(state==='playing' && [' ','arrowup','arrowdown','arrowleft','arrowright'].includes(k)) e.preventDefault();
     keys[k]=true;
-    if(k==='p'){ if(state==='playing') pauseGame(); else if(state==='paused') resumeGame(); }
+    if(k==='p'){
+      if(e.repeat) return;
+      if(state==='playing') pauseGame(); else if(state==='paused') resumeGame();
+    }
     if(k==='enter'){
+      if(e.repeat) return;
       if(state==='start') startGame();
       else if(state==='over') startGame();
       else if(state==='paused') resumeGame();
     }
   });
   window.addEventListener('keyup', e=>{ keys[e.key.toLowerCase()]=false; });
-  window.addEventListener('blur', ()=>{ for(const k in keys) keys[k]=false; });
+  window.addEventListener('blur', ()=>{
+    for(const k in keys) keys[k]=false;
+    if(state==='playing') pauseGame();
+  });
 
   // ---- Pointer / dokunmatik ----
   const pointer={active:false, id:null, lastX:0, lastY:0};
@@ -537,7 +564,10 @@
     pointer.lastX=p.x; pointer.lastY=p.y;
   });
   function endPointer(e){
-    if(e.pointerId===pointer.id){ pointer.active=false; pointer.id=null; }
+    if(e.pointerId===pointer.id){
+      pointer.active=false; pointer.id=null;
+      try{ canvas.releasePointerCapture(e.pointerId); }catch(err){}
+    }
   }
   canvas.addEventListener('pointerup', endPointer);
   canvas.addEventListener('pointercancel', endPointer);
@@ -568,7 +598,6 @@
 
   // ---- Başlat ----
   reset();
-  player.lives=3;
   resize();
   requestAnimationFrame(loop);
 })();
