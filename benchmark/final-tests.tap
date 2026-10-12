@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: start and restart clear score, lives, held inputs and entities
+ok 1 - start and restart clear score, lives, held inputs and entities
+  ---
+  duration_ms: 2.996434
+  type: 'test'
+  ...
+# Subtest: pause/resume and repeated P
+ok 2 - pause/resume and repeated P
+  ---
+  duration_ms: 0.886381
+  type: 'test'
+  ...
+# Subtest: native button Enter is handled once by button click, not global handler
+ok 3 - native button Enter is handled once by button click, not global handler
+  ---
+  duration_ms: 1.157175
+  type: 'test'
+  ...
+# Subtest: focus and visibility pause and clear input
+ok 4 - focus and visibility pause and clear input
+  ---
+  duration_ms: 0.719845
+  type: 'test'
+  ...
+# Subtest: pointer drag uses logical coordinates and pointer cancel stops firing
+ok 5 - pointer drag uses logical coordinates and pointer cancel stops firing
+  ---
+  duration_ms: 0.765602
+  type: 'test'
+  ...
+# Subtest: keyboard movement and firing
+ok 6 - keyboard movement and firing
+  ---
+  duration_ms: 0.923412
+  type: 'test'
+  ...
+# Subtest: enemy destruction awards score
+ok 7 - enemy destruction awards score
+  ---
+  duration_ms: 0.909094
+  type: 'test'
+  ...
+# Subtest: offscreen projectiles removed on all sides
+ok 8 - offscreen projectiles removed on all sides
+  ---
+  duration_ms: 1.056134
+  type: 'test'
+  ...
+# Subtest: damage invulnerability and gameover freeze
+ok 9 - damage invulnerability and gameover freeze
+  ---
+  duration_ms: 1.447146
+  type: 'test'
+  ...
+# Subtest: localStorage failure does not break start/end
+ok 10 - localStorage failure does not break start/end
+  ---
+  duration_ms: 0.906349
+  type: 'test'
+  ...
+# Subtest: resize preserves score/lives and dt is capped
+ok 11 - resize preserves score/lives and dt is capped
+  ---
+  duration_ms: 0.92752
+  type: 'test'
+  ...
+# Subtest: reduced motion stops decorative star/grid movement
+ok 12 - reduced motion stops decorative star/grid movement
+  ---
+  duration_ms: 0.683477
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 69.629948
