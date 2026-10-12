@@ -1,0 +1,23 @@
+{
+  "model": "Qwen/Qwen3.8-27B",
+  "messages": [
+    {
+      "role": "system",
+      "content": "Sen deneyimli bir JavaScript oyun geliştiricisisin. İstenen oyunun çalışır, eksiksiz kodunu yaz. Harici paket, CDN, görsel veya ağ isteği kullanma. Yalnız istenen dosyayı tek bir html kod bloğunda döndür. Açıklama yazma."
+    },
+    {
+      "role": "user",
+      "content": "Tek bir index.html dosyasında, HTML/CSS/vanilla JavaScript Canvas ile tarayıcıda çalışan kaliteli bir 2D dikey uçak oyunu yap. Adı \"zeka uçuş\" olsun; metinler Türkçe olsun. Neon gökyüzü/uzay teması, çizilmiş uçaklar ve parçacık efektleri kullan; harici varlık yok.\nGereksinimler:\n- Başlangıç ekranı, nasıl oynanır, Başla düğmesi. Başladıktan sonra oyuncu altta, düşman uçakları üstten gelir. Hareket WASD veya ok tuşları; boşluk ateş eder. Mobilde parmağı sürükleyerek hareket ve otomatik ateş. Masaüstünde pointer ile sürükleme de çalışsın.\n- Düşmanlar ateş etsin; mermiler ve uçaklar çarpışabilsin. Oyuncu3can; vurulunca kısa dokunulmazlık. Düşman öldürmek skor kazandırsın; zorluk zamanla artsın. Can, skor ve rekor görünür olsun. Rekor localStorage'a yazılsın ama erişim hatası oyunu bozmasın.\n- P veya ekrandaki düğmeyle duraklatma/devam. Sekme görünmezken otomatik duraklat. Oyun bitince sonuç ve Yeniden oyna düğmesi; yeniden başlatma tüm oyun durumunu sıfırlasın.\n- requestAnimationFrame ve delta time kullan; sekme dönüşündeki büyük dt'yi sınırla. Klavye sayfa kaydırmasını yalnız oyun oynanırken engelle; focus kaybında basılı tuşları sıfırla. Mobil touch-action ve pointer capture kullan; pointerup/cancel durumları temizlensin.\n- Canvas sabit mantıksal480×720alan kullansın; pencereye sığsın, retina ekranı desteklesin. Çarpışma mantıksal koordinatlarla olsun. Resizing oyun durumunu sıfırlamasın. Küçük mobil ekranda da düğme ve HUD sığsın.\n- Başlangıç/son/duraklama arayüzü gerçek HTML düğmeleri olsun, klavyeyle erişilebilir olsun. reduced-motion tercihini efektlerde dikkate al. Oyun dışında internet/API bağlantısı yok.\nEksiksiz dosyayı tek html kod bloğunda üret. Kodun içinde oyun durumunu veya zamanını değiştiren gizli test arayüzü ekleme. Basit ama gerçekten oynanabilir bir oyun istiyorum."
+    }
+  ],
+  "max_tokens": 4096,
+  "temperature": 0.2,
+  "seed": 42,
+  "stream": true,
+  "stream_options": {
+    "include_usage": true
+  },
+  "chat_template_kwargs": {
+    "enable_thinking": false
+  }
+}
